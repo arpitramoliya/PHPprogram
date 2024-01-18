@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        .camera-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        #camera {
+            width: 200px;
+            height: 200px;
+            border: 2px solid black;
+            object-fit: cover;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 10px;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin: 0 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="camera-container">
+        <video id="camera" autoplay></video>
+    </div>
+    <div class="button-container">
+        <button id="capturePhoto">Capture Photo</button>
+        <button id="startRecording">Start Recording</button>
+        <button id="stopRecording">Stop Recording</button>
+    </div>
+
+    <script>
+        const camera = document.getElementById('camera');
+        const capturePhotoButton = document.getElementById('capturePhoto');
+        const startRecordingButton = document.getElementById('startRecording');
+        const stopRecordingButton = document.getElementById('stopRecording');
+        let mediaStream;
+
+        async function startCamera() {
+            try {
+                mediaStream = await navigator.mediaDevices.getUserMedia({ video: true });
+                camera.srcObject = mediaStream;
+            } catch (error) {
+                console.error('Error accessing camera:', error);
+            }
+        }
+
+        startCamera();
+
+        capturePhotoButton.addEventListener('click', () => {
+            const canvas = document.createElement('canvas');
+            canvas.width = 200;
+            canvas.height = 200;
+            const context = canvas.getContext('2d');
+            context.drawImage(camera, 0, 0, 200, 200);
+            const photoDataURL = canvas.toDataURL();
+            console.log(photoDataURL);
+        });
+
+        let mediaRecorder;
+        let recordedChunks = [];
+
+        startRecordingButton.addEventListener('click', () => {
+            mediaRecorder = new MediaRecorder(mediaStream);
+            mediaRecorder.ondataavailable = event => {
+                if (event.data.size > 0) {
+                    recordedChunks.push(event.data);
+                }
+            };
+            mediaRecorder.start();
+        });
+
+        stopRecordingButton.addEventListener('click', () => {
+            if (mediaRecorder && mediaRecorder.state === 'recording') {
+                mediaRecorder.stop();
+            }
+        });
+
+        mediaRecorder.addEventListener('stop', () => {
+            const blob = new Blob(recordedChunks, { type: 'video/webm' });
+            const videoURL = URL.createObjectURL(blob);
+            console.log(videoURL);
+            recordedChunks = [];
+        });
+    </script>
+</body>
+</html>

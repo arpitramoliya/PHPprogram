@@ -1,0 +1,36 @@
+.ex1{
+    padding: 20px;
+    text-align: center;
+    color: black;
+  }
+  
+  /*Navigation Bar*/
+  .a :hover{
+  color: white;
+  }
+  header{
+    background-color: #1a1d24;
+  }
+  .container{
+    max-width: 98rem;
+    margin-inline: auto;
+    justify-content: space-between;
+    padding-block: 1.5rem;
+  }
+  .navbar{
+    position: relative;
+    display: flex;
+    list-style: none;
+  }
+  .nav-list{
+    position: relative;
+    display: flex;
+    list-style: none;
+    color: #e91111;
+  }
+  .nav-item{
+    min-width: 10rem;
+    text-align: center;
+    padding-block: 1rem;
+    color: rgb(255, 255, 255);
+  }
